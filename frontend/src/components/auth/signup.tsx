@@ -7,17 +7,23 @@ export default function (props: any) {
     const [user_name, set_user_name] = useState('')
     const [password, set_password] = useState('')
 
-    const input_change_handler = (set_func: React.Dispatch<React.SetStateAction<string>>, event: React.ChangeEvent<HTMLInputElement>) => {
+    const input_change_handler = (set_func: any, event: any) => {
         set_func(event.target.value)
     }
 
   const onSubmit = (event: any) => {
     event.preventDefault()
-    console.log(first_name, last_name, user_name, password)
-    Axios.get(`http://localhost:3000/user/4`)
-      .then(res => {
-        console.log(res.data);
-      })
+    
+    const new_user = {
+        first_name: first_name,
+        last_name: last_name,
+        user_name: user_name,
+        password: password,
+    }
+    console.log(new_user)
+    Axios.post('http://localhost:3000/signup', {}, {params: new_user}).then((res => {
+        console.log(res.data)
+    }))
   }
   return (
     <div className="Auth-form-container">
