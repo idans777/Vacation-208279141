@@ -54,7 +54,6 @@ route.post("/signup", async(request: Request, response:Response, next:NextFuncti
 
     response.status(201).json({
         'msg': 'user added successfully',
-        'token': '123'
     })
 })
 

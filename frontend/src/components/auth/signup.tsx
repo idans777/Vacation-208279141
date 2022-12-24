@@ -43,7 +43,7 @@ export default function (props: any) {
               className="form-control mt-1"
               placeholder="e.g Jane"
               onChange={(event) => {input_change_handler(set_first_name, event)}}
-            />
+            required/>
           </div>
           <div className="form-group mt-3">
             <label>Last Name</label>
@@ -52,7 +52,7 @@ export default function (props: any) {
               className="form-control mt-1"
               placeholder="e.g Doe"
               onChange={(event) => {input_change_handler(set_last_name, event)}}
-            />
+              required/>
           </div>
           <div className="form-group mt-3">
             <label>User Name</label>
@@ -61,7 +61,7 @@ export default function (props: any) {
               className="form-control mt-1"
               placeholder="e.g JaneDoe123"
               onChange={(event) => {input_change_handler(set_user_name, event)}}
-            />
+              required/>
           </div>
           <div className="form-group mt-3">
             <label>Password</label>
@@ -70,7 +70,7 @@ export default function (props: any) {
               className="form-control mt-1"
               placeholder="Password"
               onChange={(event) => {input_change_handler(set_password, event)}}
-            />
+              required/>
           </div>
           <div className="d-grid gap-2 mt-3">
             <button type="submit" className="btn btn-primary">
