@@ -3,34 +3,36 @@ import { request } from 'http';
 import { stringify } from 'querystring';
 import queries from './queries';
 import User from './classes/user'
+import { auth } from './middleware';
 
 const route = express.Router();
 
 /* GET requests */
+route.get("/", async (request: Request, response: Response, next: NextFunction) => {
+    response.status(200).json("server working");
+})
+
 route.get("/user/:id", async (request:Request, response:Response, next:NextFunction) => {
     const id = Number(request.params.id);
     response.status(200).json(await queries.get_user_by_id(id))
 })
 
-route.get("/order-by-date", async (request:Request, response:Response, next:NextFunction) => {
+route.get("/order-by-date", auth, async (request:Request, response:Response, next:NextFunction) => {
     response.status(200).json(await queries.get_all_vacations_ordered_by_date())
 })
 
-route.get("/", async (request: Request, response: Response, next: NextFunction) => {
-    response.status(200).json("server working");
-})
 
-route.get("/all-vacations", async (request: Request, response: Response, next: NextFunction) => {
+route.get("/all-vacations", auth, async (request: Request, response: Response, next: NextFunction) => {
     response.status(200).json( await queries.getAllVacations());
 })
 
-route.get("/followed-vacations/:id", async (request: Request, response: Response, next: NextFunction) => {
+route.get("/followed-vacations/:id", auth, async (request: Request, response: Response, next: NextFunction) => {
     const id = Number(request.params.id);
     response.status(200).json(await queries.get_followed_vacations(id))
     // response.status(200).json("server working")
 })
 
-route.get("/vacations/:id", async (request: Request, response:Response, next:NextFunction) => {
+route.get("/vacations/:id", auth, async (request: Request, response:Response, next:NextFunction) => {
     const id = Number(request.params.id);
     response.status(200).json(await queries.get_vacation_by_id(id))
 })
@@ -47,13 +49,11 @@ route.post("/signup", async(request: Request, response:Response, next:NextFuncti
     user.password = request.query?.password as string
     user.vacation_list = ''
 
-
-    // const token = jwt.
-    // console.log(token)
     queries.add_user(user)
 
     response.status(201).json({
         'msg': 'user added successfully',
+        'user_id': 0,
     })
 })
 
