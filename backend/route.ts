@@ -39,6 +39,13 @@ route.get("/vacations/:id", auth, async (request: Request, response:Response, ne
 
 /* POST requests */
 
+route.post("/signin", auth, async(request: Request, response:Response, next:NextFunction) => {
+   response.status(201).send("moograba")
+})
+
+
+
+
 route.post("/signup", async(request: Request, response:Response, next:NextFunction) => {
     console.log(request.query)
     const user = new User()
