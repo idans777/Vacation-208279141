@@ -1,24 +1,20 @@
+import { ok } from 'assert';
 import express, {NextFunction, Request, Response} from 'express';
-import mysql_interface from "./mysql_interface";
-import basicAuth from 'express-basic-auth'
+import { verify } from './jwt';
 
-const auth = basicAuth({
-    authorizeAsync: true,
-    authorizer: async (user, password, authorize) => {
-        const check = await mysql_interface.execute(`SELECT EXISTS (
-            SELECT * FROM user WHERE user_name='${user}' AND password='${password}'
-            ) as valid`);
-        if(check[0].valid == 1) {
-            console.log(`welcome ${user}`);
-            authorize(null, true)
+const auth = (request: Request, response: Response, next: NextFunction) => {
+    const token = request.headers.token as string
+    verify(token).then((ok) => {
+        if(ok) {
+            next()
         }
         else {
-            console.log("user name or password is incorrect");
-            authorize(null, false)
+            return response.status(401).send({
+                'msg': 'User not authoraized'
+            })
         }
-    },
-    unauthorizedResponse: "NO"
-})
+    })
+}
 
 export {
     auth,

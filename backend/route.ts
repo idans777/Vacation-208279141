@@ -1,14 +1,13 @@
 import express, {NextFunction, query, Request, response, Response} from 'express';
-import { request } from 'http';
-import { stringify } from 'querystring';
 import queries from './queries';
 import User from './classes/user'
 import { auth } from './middleware';
+import { register, login } from './logic'
 
 const route = express.Router();
 
 /* GET requests */
-route.get("/", async (request: Request, response: Response, next: NextFunction) => {
+route.get("/", auth,  async (request: Request, response: Response, next: NextFunction) => {
     response.status(200).json("server working");
 })
 
@@ -29,7 +28,6 @@ route.get("/all-vacations", auth, async (request: Request, response: Response, n
 route.get("/followed-vacations/:id", auth, async (request: Request, response: Response, next: NextFunction) => {
     const id = Number(request.params.id);
     response.status(200).json(await queries.get_followed_vacations(id))
-    // response.status(200).json("server working")
 })
 
 route.get("/vacations/:id", auth, async (request: Request, response:Response, next:NextFunction) => {
@@ -39,29 +37,45 @@ route.get("/vacations/:id", auth, async (request: Request, response:Response, ne
 
 /* POST requests */
 
-route.post("/signin", auth, async(request: Request, response:Response, next:NextFunction) => {
-   response.status(201).send("moograba")
+route.post("/signin", async(request: Request, response:Response, next:NextFunction) => {
+    const user_name = request.query?.user_name as string
+    const password = request.query?.password as string
+    const result = login(user_name, password).then((token) => {
+        if(token) {
+            const trueToken = token.split(" ")[0]
+            response.status(200).send({
+                'msg': 'Logged in!',
+                'token': trueToken
+            })
+        }
+        else {
+            response.status(401).send("NO")
+        }
+    })
 })
 
 
 
 
 route.post("/signup", async(request: Request, response:Response, next:NextFunction) => {
-    console.log(request.query)
-    const user = new User()
-    user.id = 0
-    user.first_name = request.query?.first_name as string
-    user.last_name = request.query?.last_name as string
-    user.user_name = request.query?.user_name as string
-    user.password = request.query?.password as string
-    user.vacation_list = ''
+    const first_name = request.query?.first_name as string
+    const last_name = request.query?.last_name as string
+    const user_name = request.query?.user_name as string
+    const password = request.query?.password as string
+    const user = new User(first_name, last_name, user_name, password)
 
-    queries.add_user(user)
-
-    response.status(201).json({
-        'msg': 'user added successfully',
-        'user_id': 0,
+    register(user).then((ok) => {
+        if(ok) {
+            return response.status(201).json({
+                'msg': 'user added successfully',
+                'user_id': ok,
+            })
+        }
+        response.status(409).json({
+            'msg': 'user name already taken',
+        })
     })
+
 })
 
 export default route;

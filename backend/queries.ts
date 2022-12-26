@@ -44,10 +44,14 @@ const get_followed_vacations = async (id: number): Promise<any> => {
 }
 
 const add_user = async (user: User): Promise<any> => {
-    console.log('YES')
-    console.log(user)
     const sql = `INSERT INTO user (first_name, last_name, user_name, password)
         VALUES ('${user.first_name}', '${user.last_name}', '${user.user_name}', '${user.password}')`
+    const result = await mysql_interface.execute(sql);
+    return result;
+}
+
+const signin = async (user_name:string, password:string): Promise<any> => {
+    const sql = `SELECT * FROM user WHERE user_name='${user_name}' AND password='${password}'`
     const result = await mysql_interface.execute(sql);
     return result;
 }
@@ -62,5 +66,6 @@ export default {
     get_user_by_user_name,
     get_all_vacations_ordered_by_date,
     get_followed_vacations,
-    add_user
+    add_user,
+    signin,
 }

@@ -1,29 +1,42 @@
 import User from "./classes/user";
 import Vacation from "./classes/vacation";
 import mysql_interface from "./mysql_interface";
+import queries from "./queries";
+import { sign, verify } from './jwt';
 
-/* Register new user */
-const register = async (user: User) => {
+/*
+    Register new user
+    Return assigned user id on success
+    Return 0 on failure
+*/
+const register = async (user: User): Promise<number> => {
     const check = await mysql_interface.execute(`SELECT EXISTS(SELECT * FROM user WHERE user_name='${user.user_name}')as user_count`);
     if(check[0].user_count == 0 ) {
-        const sql = `INSERT INTO user (first_name, last_name,user_name,password,admin) VALUES ('${user.first_name}', '${user.last_name}', '${user.user_name}', '${user.password}' , false)`;
-        await mysql_interface.execute(sql);
+        const result = await queries.add_user(user)
+        return result.insertId
     }
     else {
         console.log("user name already exists");
+        return 0
     }
 }
 
-/* Check user name and password */
-const login = async (user_name:string, password:string) => {
-    const check = await mysql_interface.execute(`SELECT EXISTS (
-        SELECT * FROM user WHERE user_name='${user_name}' AND password='${password}'
-        ) as valid`);
-        if(check[0].valid == 1) {
-            console.log(`welcome ${user_name}`);
-        }
-        else
+/*
+    Login
+    Return token on success
+    Return null on failure
+*/
+const login = async (user_name:string, password:string):Promise<any> => {
+    const result = await queries.signin(user_name, password);
+    if(result && result.length !== 0) {
+        console.log(`Welcome ${user_name}`);
+        const user = new User(result[0].first_name, result[0].last_name, result[0].user_name, result[0].password, result[0].id)
+        const token = await sign(user)
+        return token
+    }
+    else
         console.log("user name or password is incorrect");
+        return null
 }
 
 /* Add delete and update vacation */    
@@ -65,7 +78,7 @@ const unfollow_vacation = async (user_id:Number, vacation_id:Number) => {
 }
 
 
-export default {
+export {
     register,
     login,
     follow_vacation,
