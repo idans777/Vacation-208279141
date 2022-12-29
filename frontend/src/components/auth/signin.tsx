@@ -1,22 +1,28 @@
-
 import axios from "axios"
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
+import { context } from '../../App'
 
 export default function (props: any) {
-
-  const [user_name, set_username] = useState('');
+  // const [user_name_temp, set_username] = useState('');
   const [password, set_password] = useState('');
-  
+  const my_context = useContext(context);
+  const {login, toggle_login, user_name, set_user_name, token, set_token} = my_context
+  const navigate = useNavigate()
+
   const input_change_handler = (set_func: any, event: any) => {
     set_func(event.target.value)
   }
 
   const onSubmit = (event: any) => {
     event.preventDefault()
-    console.log(user_name, password);
-    axios.post("http://localhost:3000/signin", {}, {auth: {username: user_name, password: password}}).then((res) => {
-      console.log("lizard");
-      console.log(res);
+    axios.post("http://localhost:3000/signin", {}, {headers: {user_name: user_name, password: password}}).then((res) => {
+      if(res.status == 200) {
+        set_user_name(user_name)
+        set_token(res.data.token)
+        toggle_login()
+        navigate('/home', {replace: true})
+      }
     })
   }
 
@@ -37,7 +43,7 @@ export default function (props: any) {
               type="text"
               className="form-control mt-1"
               placeholder="Enter user name"
-              onChange={(event) =>{input_change_handler(set_username, event)}}
+              onChange={(event) =>{input_change_handler(set_user_name, event)}}
               required/>
           </div>
           <div className="form-group mt-3">

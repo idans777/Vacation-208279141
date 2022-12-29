@@ -13,7 +13,6 @@ const sign = (user: User) => {
 }
 
 const verify = (token: string): Promise<boolean> => {
-    // const trueToken = token.split(" ")[1]
     return new Promise<boolean>((resolve, reject) => {
         try {
             jwt.verify(token, JWT_SECRET, (err:any, user:any) => {

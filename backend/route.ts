@@ -38,14 +38,13 @@ route.get("/vacations/:id", auth, async (request: Request, response:Response, ne
 /* POST requests */
 
 route.post("/signin", async(request: Request, response:Response, next:NextFunction) => {
-    const user_name = request.query?.user_name as string
-    const password = request.query?.password as string
+    const user_name = request.headers?.user_name as string
+    const password = request.headers?.password as string
     const result = login(user_name, password).then((token) => {
         if(token) {
-            const trueToken = token.split(" ")[0]
             response.status(200).send({
                 'msg': 'Logged in!',
-                'token': trueToken
+                'token': token
             })
         }
         else {

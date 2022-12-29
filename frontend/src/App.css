@@ -1,6 +1,12 @@
 
 .App {
-  background-color: white;
+  background-color: rgb(255, 255, 255);
+}
+
+.main_link{
+  color: rgb(0, 0, 0);
+  font-size: 3vw;
+  text-align: center;
 }
 
 .Auth-form-container {
