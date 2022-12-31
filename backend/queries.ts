@@ -56,6 +56,19 @@ const signin = async (user_name:string, password:string): Promise<any> => {
     return result;
 }
 
+const follow = async (user_id: number, vacation_id: number): Promise<any> => {
+    const sql = `INSERT INTO followed_vacation (vacation_id, user_id)
+        VALUES (${vacation_id}, ${user_id})`
+    console.log('user_id = '+user_id)
+    console.log('vacation_id = '+vacation_id)
+    try {
+        const result = await mysql_interface.execute(sql);
+        return result;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 
 export default {
@@ -68,4 +81,5 @@ export default {
     get_followed_vacations,
     add_user,
     signin,
+    follow,
 }

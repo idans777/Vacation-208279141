@@ -3,6 +3,7 @@ import queries from './queries';
 import User from './classes/user'
 import { auth } from './middleware';
 import { register, login } from './logic'
+import { get_user_id } from './jwt';
 
 const route = express.Router();
 
@@ -53,9 +54,6 @@ route.post("/signin", async(request: Request, response:Response, next:NextFuncti
     })
 })
 
-
-
-
 route.post("/signup", async(request: Request, response:Response, next:NextFunction) => {
     const first_name = request.query?.first_name as string
     const last_name = request.query?.last_name as string
@@ -74,7 +72,20 @@ route.post("/signup", async(request: Request, response:Response, next:NextFuncti
             'msg': 'user name already taken',
         })
     })
-
+})
+route.post("/follow", auth, async(request: Request, response:Response, next:NextFunction) => {
+    const token = request.headers?.token as string
+    const vacation_id:number = parseInt(request.query?.vacation_id as string)
+    get_user_id(token).then(async (user_id) => {
+        if(user_id > 0) {
+            await queries.follow(user_id, vacation_id).then((res) => {
+                response.status(200).send({msg: 'Follow success'})
+            })
+        }
+        else {
+            response.status(201).send({msg: 'Follow failure'})
+        }
+    })
 })
 
 export default route;

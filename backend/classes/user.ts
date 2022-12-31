@@ -18,6 +18,12 @@ class User {
         this.user_name = user_name
         this.password = password
         this.vacation_list = ''
+        if(id){
+            this.id = id
+        }
+        else {
+            this.id = 0
+        }
     }
 }
 

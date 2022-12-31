@@ -2,13 +2,17 @@ import axios from "axios"
 import React, { useState, useContext } from "react"
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
 import { context } from '../../App'
-
+import { useDispatch } from "react-redux"
+//State
+import { login, logout } from '../../state/login_slice'
+import { set_username } from '../../state/username_slice'
+import { set_token } from '../../state/token_slice'
+import { useSelector } from "react-redux"//-------------
 export default function (props: any) {
-  // const [user_name_temp, set_username] = useState('');
   const [password, set_password] = useState('');
-  const my_context = useContext(context);
-  const {login, toggle_login, user_name, set_user_name, token, set_token} = my_context
+  const [user_name, set_user_name] = useState('');
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const input_change_handler = (set_func: any, event: any) => {
     set_func(event.target.value)
@@ -18,10 +22,13 @@ export default function (props: any) {
     event.preventDefault()
     axios.post("http://localhost:3000/signin", {}, {headers: {user_name: user_name, password: password}}).then((res) => {
       if(res.status == 200) {
-        set_user_name(user_name)
-        set_token(res.data.token)
-        toggle_login()
+        // const vacations = useSelector((state:any) => state.vacation_reducer.value)
+        // console.log(vacations)
+        dispatch(set_username(user_name))
+        dispatch(set_token(res.data.token))
+        dispatch(login())
         navigate('/home', {replace: true})
+        console.log('Logged in')
       }
     })
   }

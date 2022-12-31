@@ -6,6 +6,7 @@ const JWT_SECRET = 'yes_this_is_dog'
 const sign = (user: User) => {
     const data = {
         "timeStamp": Date(),
+        id: user.id,
         user: user.user_name,
         exp: Math.floor(Date.now() / 1000) + (60 * 30),
     }
@@ -29,17 +30,36 @@ const verify = (token: string): Promise<boolean> => {
     })
 }
 
-export {
-    sign,
-    verify
+const get_user_id = (token: string): Promise<number> => {
+    return new Promise<number>((resolve, reject) => {
+        try {
+            jwt.verify(token, JWT_SECRET, (err:any, decoded:any) => {
+                if(err) {
+                    resolve(-1)
+                }
+                resolve(decoded.id)
+            })
+        }
+        catch (err:any) {
+            console.log(err)
+            resolve(-1)
+        }
+    })
 }
 
-// const getUserNameFromJWT = (token:any) => {
+// const get_user_id = (token:any) => {
 //     try {
 //         const myToken:any = jwt.decode(token.split(" ")[1]);
-//         return myToken.user;
+//         // const myToken:any = jwt.decode(token);
+//         return myToken.id;
 //     } catch (err) {
 //         //console.log(err);
 //         console.log("error getting user...");
 //     }
 // }
+
+export {
+    sign,
+    verify,
+    get_user_id,
+}
