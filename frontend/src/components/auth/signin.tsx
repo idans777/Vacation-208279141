@@ -1,7 +1,6 @@
 import axios from "axios"
 import React, { useState, useContext } from "react"
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
-import { context } from '../../App'
 import { useDispatch } from "react-redux"
 //State
 import { login, logout } from '../../state/login_slice'

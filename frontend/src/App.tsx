@@ -6,12 +6,9 @@ import Signin from './components/auth/signin';
 import Signup from './components/auth/signup';
 import Home from './components/home/home';
 import Header from './components/header/header';
-
-import { RootState, store } from './state/store'
-import { useSelector, useDispatch } from 'react-redux'
-import { login, logout } from './state/login_slice'
-
-export const context = createContext<any>({});
+//Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min'
 
 function App() {
   return (

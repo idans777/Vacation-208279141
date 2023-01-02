@@ -23,12 +23,13 @@ export default function () {
     useEffect(() => {
         get_all_vacations()
     }, [])
-    
+   
     return(
         <div className='Home-Container'>
             <h1>Welcome {user_name}</h1>
+            {user_name == "admin" ? <button onClick={() => {}}>Add vacation</button> : null}
             <button onClick={() => get_all_vacations()}>Refresh</button>
-            <Vacation_list></Vacation_list>
+            <Vacation_list/>
         </div>
     )
 }
