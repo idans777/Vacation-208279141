@@ -1,9 +1,10 @@
 import express, {NextFunction, query, Request, response, Response} from 'express';
 import queries from './queries';
 import User from './classes/user'
-import { auth } from './middleware';
-import { register, login } from './logic'
+import { auth, auth_admin } from './middleware';
+import { register, login, add_vacation, delete_vacation, update_vacation } from './logic'
 import { get_user_id } from './jwt';
+import Vacation from './classes/vacation';
 
 const route = express.Router();
 
@@ -84,6 +85,58 @@ route.post("/follow", auth, async(request: Request, response:Response, next:Next
         }
         else {
             response.status(201).send({msg: 'Follow failure'})
+        }
+    })
+})
+route.post("/follow", auth, async(request: Request, response:Response, next:NextFunction) => {
+    // const token = request.headers?.token as string
+    // const vacation_id:number = parseInt(request.query?.vacation_id as string)
+    // get_user_id(token).then(async (user_id) => {
+    //     if(user_id > 0) {
+    //         await queries.follow(user_id, vacation_id).then((res) => {
+    //             response.status(200).send({msg: 'Follow success'})
+    //         })
+    //     }
+    //     else {
+    //         response.status(201).send({msg: 'Follow failure'})
+    //     }
+    // })
+})
+
+route.post("/add-vacation", auth_admin, async(request: Request, response:Response, next:NextFunction) => {
+    const { description, destination, image, start_date, end_date, price } = request.query
+    const vac:Vacation = new Vacation(description+'', destination+'', image+'', start_date+'', end_date+'', parseInt(price+'') )
+    add_vacation(vac).then((ok) => {
+        if(ok) {
+            response.status(200).send({msg: 'Vacation added'})
+        }
+        else {
+            response.status(201).send({msg: 'Vacation not added'})
+        }
+    })
+})
+
+route.delete("/delete-vacation", auth_admin, async(request: Request, response:Response, next:NextFunction) => {
+    const id = parseInt(request.query?.id+'')
+    delete_vacation(id).then((ok) => {
+        if(ok) {
+            response.status(200).send({msg: 'Vacation deleted'})
+        }
+        else {
+            response.status(201).send({msg: 'Vacation not deleted'})
+        }
+    })
+})
+
+route.post("/update-vacation", auth_admin, async(request: Request, response:Response, next:NextFunction) => {
+    const { description, destination, image, start_date, end_date, price } = request.query
+    const vac:Vacation = new Vacation(description+'', destination+'', image+'', start_date+'', end_date+'', parseInt(price+'') )
+    update_vacation(vac).then((ok) => {
+        if(ok) {
+            response.status(200).send({msg: 'Vacation updated'})
+        }
+        else {
+            response.status(201).send({msg: 'Vacation not updated'})
         }
     })
 })

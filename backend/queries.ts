@@ -1,4 +1,5 @@
 import User from "./classes/user";
+import Vacation from "./classes/vacation";
 import mysql_interface from "./mysql_interface";
 
 const getAllVacations = async (): Promise<any> => {
@@ -69,6 +70,37 @@ const follow = async (user_id: number, vacation_id: number): Promise<any> => {
     }
 }
 
+const add_vacation = async (vac: Vacation): Promise<any> => {
+    const sql = `INSERT INTO vacations (description, destination, image, start_date, end_date, price) VALUES
+        ('${vac.description}', '${vac.destination}', '${vac.image}', '${vac.start_date}', '${vac.end_date}', ${vac.price} )`
+    const result = await mysql_interface.execute(sql);
+    return result;
+}
+
+const delete_vacation = async (vac_id: number): Promise<any> => {
+    const sql = `DELETE FROM followed_vacation WHERE vacation_id=${vac_id}`
+    const result = await mysql_interface.execute(sql);
+    if(!result) {
+        return result
+    }
+    const sql_2 = `DELETE FROM vacations WHERE id=${vac_id}`
+    const result_2 = await mysql_interface.execute(sql_2);
+    return result_2;
+}
+
+const update_vacation = async (vac: Vacation): Promise<any> => {
+    const sql = `UPDATE vacations
+        SET
+            description='${vac.description}',
+            destination='${vac.destination}',
+            image='${vac.image}',
+            start_date='${vac.start_date}',
+            end_date='${vac.end_date}',
+            price=${vac.price}
+        WHERE id=${vac.id}`
+    const result = await mysql_interface.execute(sql);
+    return result;
+}
 
 
 export default {
@@ -82,4 +114,7 @@ export default {
     add_user,
     signin,
     follow,
+    add_vacation,
+    delete_vacation,
+    update_vacation,
 }

@@ -14,5 +14,3 @@ server.use(express.json());
 server.use("/", route);
 server.use("*", ErrorHandler);
 server.listen(config.port, () => {console.log(`listening on http://localhost:${config.port}`)})
-
-

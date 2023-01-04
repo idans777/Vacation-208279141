@@ -47,19 +47,26 @@ const get_user_id = (token: string): Promise<number> => {
     })
 }
 
-// const get_user_id = (token:any) => {
-//     try {
-//         const myToken:any = jwt.decode(token.split(" ")[1]);
-//         // const myToken:any = jwt.decode(token);
-//         return myToken.id;
-//     } catch (err) {
-//         //console.log(err);
-//         console.log("error getting user...");
-//     }
-// }
+const get_user_name = (token: string): Promise<string> => {
+    return new Promise<string>((resolve, reject) => {
+        try {
+            jwt.verify(token, JWT_SECRET, (err:any, decoded:any) => {
+                if(err) {
+                    resolve('')
+                }
+                resolve(decoded.user)
+            })
+        }
+        catch (err:any) {
+            console.log(err)
+            resolve('')
+        }
+    })
+}
 
 export {
     sign,
     verify,
     get_user_id,
+    get_user_name,
 }

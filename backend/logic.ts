@@ -46,20 +46,34 @@ const login = async (user_name:string, password:string):Promise<any> => {
 }
 
 /* Add delete and update vacation */    
-const add_vacation = async (vacation: Vacation) => {
-    const sql = `INSERT INTO vacations (description, destination, image, start_date, end_date, price, followers_count) VALUES 
-        ('${vacation.description}', '${vacation.destination}', '${vacation.image}', ${vacation.start_date}, ${vacation.end_date}, ${vacation.price}, ${vacation.followed_vacation})`
-    await mysql_interface.execute(sql);
+const add_vacation = async (vacation: Vacation):Promise<boolean> => {
+    const result = await queries.add_vacation(vacation);
+    if(result) {
+        console.log('Vacation added')
+        return true
+    }
+    console.log('Vacation not added')
+    return false
 }
 
-const delete_vacation = async (id: Number) => {
-    const sql = `DELETE FROM vacations WHERE id=${id}`;
-    await mysql_interface.execute(sql);
+const delete_vacation = async (id: number) => {
+    const result = await queries.delete_vacation(id);
+    if(result) {
+        console.log('Vacation deleted')
+        return true
+    }
+    console.log('Vacation not deleted')
+    return false
 }
 
 const update_vacation = async (vacation: Vacation) => {
-    const sql = `UPDATE FROM vacations SET () VALUES () WHERE id=${vacation.id}`;
-    await mysql_interface.execute(sql);
+    const result = await queries.update_vacation(vacation);
+    if(result) {
+        console.log('Vacation updated')
+        return true
+    }
+    console.log('Vacation not updated')
+    return false
 }
 
 /* Follow and unfollow vacation */
