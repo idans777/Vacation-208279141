@@ -11,6 +11,10 @@ import { resolve } from "path";
     Return 0 on failure
 */
 const register = async (user: User): Promise<number> => {
+    if(user.user_name == "admin") {
+        console.log("user name not allowed");
+        return -1
+    }
     const check = await mysql_interface.execute(`SELECT EXISTS(SELECT * FROM user WHERE user_name='${user.user_name}')as user_count`);
     if(check[0].user_count == 0 ) {
         const result = await queries.add_user(user)

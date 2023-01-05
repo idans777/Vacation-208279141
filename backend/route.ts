@@ -63,15 +63,22 @@ route.post("/signup", async(request: Request, response:Response, next:NextFuncti
     const user = new User(first_name, last_name, user_name, password)
 
     register(user).then((ok) => {
-        if(ok) {
-            return response.status(201).json({
+        if(ok > 0) {
+            response.status(201).json({
                 'msg': 'user added successfully',
                 'user_id': ok,
             })
         }
-        response.status(409).json({
-            'msg': 'user name already taken',
-        })
+        else if(ok == -1) {
+            response.status(409).json({
+                'msg': 'username is not allowed',
+            })
+        }
+        else {
+            response.status(409).json({
+                'msg': 'user name already taken',
+            })
+        }
     })
 })
 route.post("/follow", auth, async(request: Request, response:Response, next:NextFunction) => {
