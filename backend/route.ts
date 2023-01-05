@@ -95,19 +95,19 @@ route.post("/follow", auth, async(request: Request, response:Response, next:Next
         }
     })
 })
-route.post("/follow", auth, async(request: Request, response:Response, next:NextFunction) => {
-    // const token = request.headers?.token as string
-    // const vacation_id:number = parseInt(request.query?.vacation_id as string)
-    // get_user_id(token).then(async (user_id) => {
-    //     if(user_id > 0) {
-    //         await queries.follow(user_id, vacation_id).then((res) => {
-    //             response.status(200).send({msg: 'Follow success'})
-    //         })
-    //     }
-    //     else {
-    //         response.status(201).send({msg: 'Follow failure'})
-    //     }
-    // })
+route.post("/unfollow", auth, async(request: Request, response:Response, next:NextFunction) => {
+    const token = request.headers?.token as string
+    const vacation_id:number = parseInt(request.query?.vacation_id as string)
+    get_user_id(token).then(async (user_id) => {
+        if(user_id > 0) {
+            await queries.unfollow(user_id, vacation_id).then((res) => {
+                response.status(200).send({msg: 'Unfollow success'})
+            })
+        }
+        else {
+            response.status(201).send({msg: 'Unfollow failure'})
+        }
+    })
 })
 
 route.post("/add-vacation", auth_admin, async(request: Request, response:Response, next:NextFunction) => {

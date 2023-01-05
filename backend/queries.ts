@@ -60,13 +60,20 @@ const signin = async (user_name:string, password:string): Promise<any> => {
 const follow = async (user_id: number, vacation_id: number): Promise<any> => {
     const sql = `INSERT INTO followed_vacation (vacation_id, user_id)
         VALUES (${vacation_id}, ${user_id})`
-    console.log('user_id = '+user_id)
-    console.log('vacation_id = '+vacation_id)
     try {
         const result = await mysql_interface.execute(sql);
         return result;
     } catch (error) {
         console.log(error)
+    }
+}
+
+const unfollow = async (user_id: number, vacation_id: number): Promise<any> => {
+    const sql = `DELETE FROM followed_vacation WHERE vacation_id=${vacation_id} AND user_id=${user_id}`
+    try {
+        await mysql_interface.execute(sql);
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -114,6 +121,7 @@ export default {
     add_user,
     signin,
     follow,
+    unfollow,
     add_vacation,
     delete_vacation,
     update_vacation,
