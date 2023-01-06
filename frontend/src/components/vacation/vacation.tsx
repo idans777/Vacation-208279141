@@ -2,19 +2,23 @@ import react, { useState } from "react"
 import axios from "axios"
 import { type vacation } from "../../state/vacations_slice"
 import './vacation.css'
-import { store } from "../../state/store"
+import { RootState, store } from "../../state/store"
+import { useSelector } from "react-redux"
 
 
 export default function (props: vacation) {
-    const [user_name, set_user_name] = useState(store.getState().username_reduce.value)
+    const user_name = useSelector((state:RootState) => state.username_reduce.value)
+
+    const [follow_unfollow, set_follow_unfollow] = useState('follow')
     const follow = (event: react.MouseEvent<HTMLButtonElement>) => {
         const id = event.currentTarget.parentElement?.id
         const vacation_id = id?.at(id.length - 1)
         const token = store.getState().token_reducer.value
-        axios.post('http://www.localhost:3000/follow', {}, {headers:{token: token}, params: {vacation_id: vacation_id}}).then((res) => {
+        axios.post(`http://www.localhost:3000/${follow_unfollow}`, {}, {headers:{token: token}, params: {vacation_id: vacation_id}}).then((res) => {
             console.log(res)
             if(res.status == 200) {
                 //toggle follow
+                set_follow_unfollow(current => current == 'follow' ? 'unfollow' : 'follow')
             }
             else {
                 console.log('follow failed')
@@ -26,7 +30,7 @@ export default function (props: vacation) {
 
     return (
         <div id={'vacation-box-'+props.id} className={'vacation-box'}>
-            <button className="follow-btn" onClick={(event)=>{follow(event)}}>follow</button>
+            <button className="follow-btn" onClick={(event)=>{follow(event)}}>{follow_unfollow}</button>
             { user_name == "admin" ? <Buttons/> : null }
             <br/>
             <div className="destination">{props.destination}</div>
