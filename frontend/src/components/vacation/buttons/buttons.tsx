@@ -24,7 +24,7 @@ export default function (props:{vacation_id: number}) {
     }, [])
 
     const follow = (event: react.MouseEvent<HTMLButtonElement>) => {
-        const id = event.currentTarget.parentElement?.parentElement?.id+''
+        const id = event.currentTarget.parentElement?.parentElement?.parentElement?.id+''
         const vacation_id = id.split("-").pop()
         const token = store.getState().token_reducer.value
         axios.post(`http://www.localhost:3000/${follow_unfollow}`, {}, {headers:{token: token}, params: {vacation_id: vacation_id}}).then((res) => {
@@ -75,14 +75,13 @@ export default function (props:{vacation_id: number}) {
     }
     return (
         <div>
-            <button className="follow-btn" onClick={(event)=>{follow(event)}}>{follow_unfollow}</button>
             {user_name === 'admin' ?
                 <div>
                     <button className="follow-btn" onClick={(event)=>{delete_vacation(event)}}>delete</button>
                     <button className="follow-btn" onClick={(event)=>{update_vacation(event)}}>update</button>
                 </div>
                 :
-                null
+                <button className="follow-btn" onClick={(event)=>{follow(event)}}>{follow_unfollow}</button>
             }
         </div>
     )
