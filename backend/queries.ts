@@ -85,14 +85,18 @@ const add_vacation = async (vac: Vacation): Promise<any> => {
 }
 
 const delete_vacation = async (vac_id: number): Promise<any> => {
-    const sql = `DELETE FROM followed_vacation WHERE vacation_id=${vac_id}`
-    const result = await mysql_interface.execute(sql);
-    if(!result) {
-        return result
+    try {
+        const sql = `DELETE FROM followed_vacation WHERE vacation_id=${vac_id}`
+        await mysql_interface.execute(sql);
+        try {
+            const sql = `DELETE FROM vacations WHERE id=${vac_id}`
+            return await mysql_interface.execute(sql);
+        } catch (error) {
+            console.log(error)
+        }
+    } catch (error) {
+        console.log(error)
     }
-    const sql_2 = `DELETE FROM vacations WHERE id=${vac_id}`
-    const result_2 = await mysql_interface.execute(sql_2);
-    return result_2;
 }
 
 const update_vacation = async (vac: Vacation): Promise<any> => {
@@ -108,6 +112,17 @@ const update_vacation = async (vac: Vacation): Promise<any> => {
     const result = await mysql_interface.execute(sql);
     return result;
 }
+
+const get_followed_vacation_by_user_id = async (user_id:number): Promise<any> => {
+    const sql = `SELECT * FROM followed_vacation WHERE user_id=${user_id}`
+    try{
+        const result = await mysql_interface.execute(sql);
+        return result;
+    }
+    catch (error) {
+        console.log(error);
+    }
+} 
 
 
 export default {
@@ -125,4 +140,5 @@ export default {
     add_vacation,
     delete_vacation,
     update_vacation,
+    get_followed_vacation_by_user_id,
 }

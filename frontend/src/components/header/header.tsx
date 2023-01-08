@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
 import { store, type RootState } from "../../state/store"
 import { logout } from "../../state/login_slice"
 import { clear_token } from "../../state/token_slice"
-import { clear_username } from "../../state/username_slice"
+import { clear_username } from "../../state/user_slice"
 
 export default function () {
     const auth = useSelector((state:RootState) => state.login_reducer.value)

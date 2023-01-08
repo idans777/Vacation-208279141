@@ -39,7 +39,7 @@ const login = async (user_name:string, password:string):Promise<any> => {
     }
     const result = await queries.signin(user_name, password);
     if(result && result.length !== 0) {
-        console.log(`Welcome ${user_name}`);
+        console.log(`${user_name} logged in`);
         const user = new User(result[0].first_name, result[0].last_name, result[0].user_name, result[0].password, result[0].id)
         const token = await sign(user)
         return token

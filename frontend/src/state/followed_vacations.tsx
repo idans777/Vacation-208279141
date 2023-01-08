@@ -1,18 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-export interface vacation {
+export interface followed_vacation {
     id: number,
-    description: string,
-    destination: string,
-    image: string,
-    start_date: Date,
-    end_date: Date,
-    price: number,
+    vacation_id: number,
+    user_id: number,
 }
 
 export interface vacations_state {
-    value: vacation[]
+    value: followed_vacation[]
 }
 
 const initialState: vacations_state = {
@@ -20,10 +16,10 @@ const initialState: vacations_state = {
 }
 
 export const vacations_state = createSlice({
-    name: 'vacations',
+    name: 'followed_vacations',
     initialState,
     reducers: {
-        set_vacations: (state, action: PayloadAction<vacation[]>) => {
+        set_followed_vacations: (state, action: PayloadAction<followed_vacation[]>) => {
             state.value = action.payload
             state = {
                 ...state,
@@ -33,6 +29,6 @@ export const vacations_state = createSlice({
     },
 })
 
-export const { set_vacations } = vacations_state.actions
+export const { set_followed_vacations } = vacations_state.actions
 
 export default vacations_state.reducer

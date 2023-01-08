@@ -10,7 +10,8 @@ import  { store, type RootState } from '../../state/store'
 import { set_vacations } from '../../state/vacations_slice'
 
 export default function () {
-    const [user_name, set_user_name] = useState(store.getState().username_reduce.value)
+    const user_name = useSelector((state:RootState) => state.user_reducer.user_name)
+    // const [user_name, set_user_name] = useState(store.getState().username_reducer.user_name)
     const dispatch = useDispatch()
 
     const get_all_vacations = () => {
@@ -19,10 +20,6 @@ export default function () {
             dispatch(set_vacations(res.data))
         })
     }
-
-    useEffect(() => {
-        get_all_vacations()
-    }, [])
    
     return(
         <div className='Home-Container'>

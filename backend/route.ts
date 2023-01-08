@@ -37,6 +37,13 @@ route.get("/vacations/:id", auth, async (request: Request, response:Response, ne
     response.status(200).json(await queries.get_vacation_by_id(id))
 })
 
+route.get("/my_followed_vacations", auth, async (request: Request, response:Response, next:NextFunction) => {
+    const token = request.headers?.token+''
+    get_user_id(token).then(async (id) => {
+        response.status(200).json(await queries.get_followed_vacation_by_user_id(id))
+    })
+})
+
 /* POST requests */
 
 route.post("/signin", async(request: Request, response:Response, next:NextFunction) => {
@@ -44,9 +51,18 @@ route.post("/signin", async(request: Request, response:Response, next:NextFuncti
     const password = request.headers?.password as string
     const result = login(user_name, password).then((token) => {
         if(token) {
-            response.status(200).send({
-                'msg': 'Logged in!',
-                'token': token
+            get_user_id(token).then((id) => {
+                response.status(200).send({
+                    'msg': 'Logged in!',
+                    'id': id,
+                    'token': token
+                })
+            }).catch((err) => {
+                response.status(200).send({
+                    'msg': 'Logged in! (error getting user id)',
+                    'id': 0,
+                    'token': token
+                })
             })
         }
         else {
@@ -123,8 +139,8 @@ route.post("/add-vacation", auth_admin, async(request: Request, response:Respons
     })
 })
 
-route.delete("/delete-vacation", auth_admin, async(request: Request, response:Response, next:NextFunction) => {
-    const id = parseInt(request.query?.id+'')
+route.delete("/delete-vacation/:vacation_id", auth_admin, async(request: Request, response:Response, next:NextFunction) => {
+    const id = parseInt(request.params?.vacation_id)
     delete_vacation(id).then((ok) => {
         if(ok) {
             response.status(200).send({msg: 'Vacation deleted'})

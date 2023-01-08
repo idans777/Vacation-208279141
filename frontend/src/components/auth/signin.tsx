@@ -4,8 +4,9 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 //State
 import { login, logout } from '../../state/login_slice'
-import { set_username } from '../../state/username_slice'
+import { set_id, set_username } from '../../state/user_slice'
 import { set_token } from '../../state/token_slice'
+import { store } from '../../state/store'
 import { useSelector } from "react-redux"//-------------
 export default function (props: any) {
   const [password, set_password] = useState('');
@@ -21,10 +22,9 @@ export default function (props: any) {
     event.preventDefault()
     axios.post("http://localhost:3000/signin", {}, {headers: {user_name: user_name, password: password}}).then((res) => {
       if(res.status == 200) {
-        // const vacations = useSelector((state:any) => state.vacation_reducer.value)
-        // console.log(vacations)
         dispatch(set_username(user_name))
-        dispatch(set_token(res.data.token))
+        dispatch(set_id(res.data?.id))
+        dispatch(set_token(res.data?.token))
         dispatch(login())
         navigate('/home', {replace: true})
         console.log('Logged in')
