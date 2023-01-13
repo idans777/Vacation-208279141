@@ -5,9 +5,11 @@ import { useDispatch } from "react-redux"
 import { RootState, store } from "../../../state/store"
 import { set_vacations } from "../../../state/vacations_slice"
 import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 
 export default function (props:{vacation_id: number}) {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const user_name = useSelector((state:RootState) => state.user_reducer.user_name)
     const followed_vacations = store.getState().followed_vacations_reducer.value
     const [follow_unfollow, set_follow_unfollow] = useState('follow')
@@ -24,10 +26,8 @@ export default function (props:{vacation_id: number}) {
     }, [])
 
     const follow = (event: react.MouseEvent<HTMLButtonElement>) => {
-        const id = event.currentTarget.parentElement?.parentElement?.parentElement?.id+''
-        const vacation_id = id.split("-").pop()
         const token = store.getState().token_reducer.value
-        axios.post(`http://www.localhost:3000/${follow_unfollow}`, {}, {headers:{token: token}, params: {vacation_id: vacation_id}}).then((res) => {
+        axios.post(`http://www.localhost:3000/${follow_unfollow}`, {}, {headers:{token: token}, params: {vacation_id: props.vacation_id}}).then((res) => {
             console.log(res)
             if(res.status === 200) {
                 //toggle follow
@@ -40,10 +40,8 @@ export default function (props:{vacation_id: number}) {
     }
 
     const delete_vacation = (event: react.MouseEvent<HTMLButtonElement>) => {
-        const id = event.currentTarget.parentElement?.parentElement?.parentElement?.id+''
-        const vacation_id = id.split("-").pop()
         const token = store.getState().token_reducer.value
-        axios.delete(`http://www.localhost:3000/delete-vacation/${vacation_id}`, {headers:{token: token}}).then((res) => {
+        axios.delete(`http://www.localhost:3000/delete-vacation/${props.vacation_id}`, {headers:{token: token}}).then((res) => {
             if(res.status === 200) {
                 //delete vacation
                 console.log(res.data?.msg)
@@ -60,25 +58,26 @@ export default function (props:{vacation_id: number}) {
     }
 
     const update_vacation = (event: react.MouseEvent<HTMLButtonElement>) => {
-        const id = event.currentTarget.parentElement?.parentElement?.id
-        const vacation_id = id?.at(id.length - 1)
-        const token = store.getState().token_reducer.value
-        axios.post('http://www.localhost:3000/', {}, {headers:{token: token}, params: {vacation_id: vacation_id}}).then((res) => {
-            if(res.status === 200) {
-                //update vacation
-                console.log('update succeed')
-            }
-            else {
-                console.log('update failed')
-            }
-        })
+        navigate('/update_vacation', {replace: true, state: {id: props.vacation_id}});
+        // const id = event.currentTarget.parentElement?.parentElement?.id
+        // const vacation_id = id?.at(id.length - 1)
+        // const token = store.getState().token_reducer.value
+        // axios.post('http://www.localhost:3000/update-vacation', {}, {headers:{token: token}, params: {vacation_id: vacation_id}}).then((res) => {
+        //     if(res.status === 200) {
+        //         //update vacation
+        //         console.log('update succeed')
+        //     }
+        //     else {
+        //         console.log('update failed')
+        //     }
+        // })
     }
     return (
-        <div>
+        <div className="btn-container">
             {user_name === 'admin' ?
                 <div>
-                    <button className="follow-btn" onClick={(event)=>{delete_vacation(event)}}>delete</button>
-                    <button className="follow-btn" onClick={(event)=>{update_vacation(event)}}>update</button>
+                    <button className="admin-btn" onClick={(event)=>{delete_vacation(event)}}>delete</button>
+                    <button className="admin-btn" onClick={(event)=>{update_vacation(event)}}>update</button>
                 </div>
                 :
                 <button className="follow-btn" onClick={(event)=>{follow(event)}}>{follow_unfollow}</button>

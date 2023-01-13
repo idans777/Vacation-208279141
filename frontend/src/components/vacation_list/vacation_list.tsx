@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import Vacation from '../vacation/vacation'
+import './vacation_list.css'
 //State
 import { store, type RootState } from '../../state/store'
 import axios from 'axios'

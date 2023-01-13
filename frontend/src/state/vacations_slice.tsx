@@ -6,8 +6,8 @@ export interface vacation {
     description: string,
     destination: string,
     image: string,
-    start_date: Date,
-    end_date: Date,
+    start_date: string,
+    end_date: string,
     price: number,
 }
 

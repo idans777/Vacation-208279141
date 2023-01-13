@@ -103,7 +103,12 @@ route.post("/follow", auth, async(request: Request, response:Response, next:Next
     get_user_id(token).then(async (user_id) => {
         if(user_id > 0) {
             await queries.follow(user_id, vacation_id).then((res) => {
-                response.status(200).send({msg: 'Follow success'})
+                if(res) {
+                    response.status(200).send({msg: 'Follow success'})
+                }
+                else {
+                    response.status(201).send({msg: 'Follow failure'})
+                }
             })
         }
         else {
@@ -127,7 +132,7 @@ route.post("/unfollow", auth, async(request: Request, response:Response, next:Ne
 })
 
 route.post("/add-vacation", auth_admin, async(request: Request, response:Response, next:NextFunction) => {
-    const { description, destination, image, start_date, end_date, price } = request.query
+    const { description, destination, image, start_date, end_date, price } = request.body?.data
     const vac:Vacation = new Vacation(description+'', destination+'', image+'', start_date+'', end_date+'', parseInt(price+'') )
     add_vacation(vac).then((ok) => {
         if(ok) {
@@ -152,8 +157,8 @@ route.delete("/delete-vacation/:vacation_id", auth_admin, async(request: Request
 })
 
 route.post("/update-vacation", auth_admin, async(request: Request, response:Response, next:NextFunction) => {
-    const { description, destination, image, start_date, end_date, price } = request.query
-    const vac:Vacation = new Vacation(description+'', destination+'', image+'', start_date+'', end_date+'', parseInt(price+'') )
+    const { id, description, destination, image, start_date, end_date, price } = request.body?.data
+    const vac:Vacation = new Vacation(description+'', destination+'', image+'', start_date+'', end_date+'', parseInt(price+''), parseInt(id+''))
     update_vacation(vac).then((ok) => {
         if(ok) {
             response.status(200).send({msg: 'Vacation updated'})

@@ -78,10 +78,15 @@ const unfollow = async (user_id: number, vacation_id: number): Promise<any> => {
 }
 
 const add_vacation = async (vac: Vacation): Promise<any> => {
-    const sql = `INSERT INTO vacations (description, destination, image, start_date, end_date, price) VALUES
-        ('${vac.description}', '${vac.destination}', '${vac.image}', '${vac.start_date}', '${vac.end_date}', ${vac.price} )`
-    const result = await mysql_interface.execute(sql);
-    return result;
+    try {
+        const sql = `INSERT INTO vacations (description, destination, image, start_date, end_date, price) VALUES
+            ('${vac.description}', '${vac.destination}', '${vac.image}', '${vac.start_date}', '${vac.end_date}', ${vac.price} )`
+        const result = await mysql_interface.execute(sql);
+        return result;
+    }
+    catch {
+        return null;
+    }
 }
 
 const delete_vacation = async (vac_id: number): Promise<any> => {
@@ -100,17 +105,22 @@ const delete_vacation = async (vac_id: number): Promise<any> => {
 }
 
 const update_vacation = async (vac: Vacation): Promise<any> => {
-    const sql = `UPDATE vacations
-        SET
-            description='${vac.description}',
-            destination='${vac.destination}',
-            image='${vac.image}',
-            start_date='${vac.start_date}',
-            end_date='${vac.end_date}',
-            price=${vac.price}
-        WHERE id=${vac.id}`
-    const result = await mysql_interface.execute(sql);
-    return result;
+    try {
+        const sql = `UPDATE vacations
+            SET
+                description='${vac.description}',
+                destination='${vac.destination}',
+                image='${vac.image}',
+                start_date='${vac.start_date}',
+                end_date='${vac.end_date}',
+                price=${vac.price}
+            WHERE id=${vac.id}`
+        const result = await mysql_interface.execute(sql);
+        return result;
+    }
+    catch(error) {
+        console.log(error)
+    }
 }
 
 const get_followed_vacation_by_user_id = async (user_id:number): Promise<any> => {
