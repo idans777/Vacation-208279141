@@ -9,6 +9,7 @@ export interface vacation {
     start_date: string,
     end_date: string,
     price: number,
+    followers_cout: number, // Needs to be removed (also from DB)
 }
 
 export interface vacations_state {

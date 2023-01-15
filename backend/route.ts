@@ -24,24 +24,41 @@ route.get("/order-by-date", auth, async (request:Request, response:Response, nex
 
 
 route.get("/all-vacations", auth, async (request: Request, response: Response, next: NextFunction) => {
-    response.status(200).json( await queries.getAllVacations());
+    const result = await queries.getAllVacations();
+    if(result) {
+        response.status(200).json(result);
+    }
+    else {
+        response.status(201).json({msg: 'failed getting all vacations'})
+    }
 })
 
-route.get("/followed-vacations/:id", auth, async (request: Request, response: Response, next: NextFunction) => {
-    const id = Number(request.params.id);
-    response.status(200).json(await queries.get_followed_vacations(id))
-})
+// route.get("/followed-vacations/:id", auth, async (request: Request, response: Response, next: NextFunction) => {
+//     const id = Number(request.params.id);
+//     response.status(200).json(await queries.get_followed_vacations(id))
+// })
 
 route.get("/vacations/:id", auth, async (request: Request, response:Response, next:NextFunction) => {
     const id = Number(request.params.id);
     response.status(200).json(await queries.get_vacation_by_id(id))
 })
 
-route.get("/my_followed_vacations", auth, async (request: Request, response:Response, next:NextFunction) => {
+route.get("/my-followed-vacations", auth, async (request: Request, response:Response, next:NextFunction) => {
     const token = request.headers?.token+''
     get_user_id(token).then(async (id) => {
         response.status(200).json(await queries.get_followed_vacation_by_user_id(id))
     })
+})
+
+route.get("/followers-count/:id", auth, async (request: Request, response:Response, next:NextFunction) => {
+    const id = parseInt(request.params?.id+'');
+    const result = await queries.get_followers_count_by_vacation_id(id);
+    try {
+        response.status(200).json(result);
+    }
+    catch {
+        response.status(201).json({error: 'Followers count failed'});
+    }
 })
 
 /* POST requests */

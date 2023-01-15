@@ -3,10 +3,35 @@ import Vacation from "./classes/vacation";
 import mysql_interface from "./mysql_interface";
 
 const getAllVacations = async (): Promise<any> => {
-    const sql = 'SELECT * FROM vacations';
-    const result = await mysql_interface.execute(sql);
-    return result;
+    try {
+        const sql = `SELECT * FROM vacations`;
+        const result = await mysql_interface.execute(sql);
+        return result;
+    }
+    catch(error) {
+        console.log(error)
+    }
 }
+
+// const getAllVacations_and_followers = async (): Promise<any> => {
+//     try {
+//         const sql = `
+//         SELECT
+//             vacations.*,
+//             COUNT(followed_vacation.vacation_id) AS count
+//         FROM
+//             vacations
+//             JOIN followed_vacation
+//             `;
+//             // GROUP BY vacations.*;
+//         const result = await mysql_interface.execute(sql);
+//         console.log(result.length)
+//         return result;
+//     }
+//     catch(error) {
+//         console.log(error)
+//     }
+// }
 
 const get_vacation_by_id = async (id: number): Promise<any> => {
     const sql = `SELECT * FROM vacations WHERE id=${id}`;
@@ -132,11 +157,24 @@ const get_followed_vacation_by_user_id = async (user_id:number): Promise<any> =>
     catch (error) {
         console.log(error);
     }
-} 
+}
+
+const get_followers_count_by_vacation_id = async (id: number): Promise<any> => {
+    try {
+        const sql = `SELECT COUNT(*) AS count FROM followed_vacation WHERE vacation_id=${id}`;
+        const result = await mysql_interface.execute(sql);
+        return result[0]?.count
+    }
+    catch(error) {
+        console.log(error)
+    }
+}
+
 
 
 export default {
     getAllVacations,
+    // getAllVacations_and_followers,
     get_vacation_by_id,
     get_user_by_id,
     get_password_by_user_name,
@@ -151,4 +189,5 @@ export default {
     delete_vacation,
     update_vacation,
     get_followed_vacation_by_user_id,
+    get_followers_count_by_vacation_id,
 }

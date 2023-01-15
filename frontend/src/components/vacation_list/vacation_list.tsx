@@ -17,7 +17,7 @@ export default function () {
     const followed_vacations = useSelector((state:RootState) => state.followed_vacations_reducer.value)
     const get_followed_vacations = () => {
         const token = store.getState().token_reducer.value
-        axios.get(`http://www.localhost:3000/my_followed_vacations`, {headers: {token: token}}).then((res) => {
+        axios.get(`http://www.localhost:3000/my-followed-vacations`, {headers: {token: token}}).then((res) => {
             dispatch(set_followed_vacations(res.data))
             set_loading_1(false)
         })
@@ -57,6 +57,7 @@ export default function () {
                             end_date={value.end_date}
                             image={value.image}
                             start_date={value.start_date}
+                            followers_cout={0} // Need to be removed
                         />
                     </div>)}
                 )

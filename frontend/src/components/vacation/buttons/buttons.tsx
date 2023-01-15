@@ -28,7 +28,6 @@ export default function (props:{vacation_id: number}) {
     const follow = (event: react.MouseEvent<HTMLButtonElement>) => {
         const token = store.getState().token_reducer.value
         axios.post(`http://www.localhost:3000/${follow_unfollow}`, {}, {headers:{token: token}, params: {vacation_id: props.vacation_id}}).then((res) => {
-            console.log(res)
             if(res.status === 200) {
                 //toggle follow
                 set_follow_unfollow(current => current === 'follow' ? 'unfollow' : 'follow')
