@@ -7,7 +7,7 @@ import { store, type RootState } from '../../state/store'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { set_followed_vacations } from '../../state/followed_vacations'
-import { set_vacations } from '../../state/vacations_slice'
+import { set_vacations, vacation } from '../../state/vacations_slice'
 
 export default function () {
     const dispatch = useDispatch()
@@ -25,6 +25,7 @@ export default function () {
     const get_all_vacations = () => {
         const token = store.getState().token_reducer.value
         axios.get('http://localhost:3000/all-vacations', {headers: {token: token}}).then((res) => {
+            res.data.sort((a: vacation, b: vacation) => a.start_date.localeCompare(b.start_date))
             dispatch(set_vacations(res.data))
             set_loading_2(false)
         })
