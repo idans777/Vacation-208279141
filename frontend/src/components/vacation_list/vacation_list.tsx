@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Vacation from '../vacation/vacation'
+import { IsFollow } from '../home/home'
 import './vacation_list.css'
 //State
 import { store, type RootState } from '../../state/store'
@@ -15,6 +16,20 @@ export default function () {
     const [loading_2, set_loading_2] = useState(true)
     const vacations = useSelector((state:RootState) => state.vacation_reducer.value)
     const followed_vacations = useSelector((state:RootState) => state.followed_vacations_reducer.value)
+
+    const update_my_vacations = () => {
+        return vacations.filter(vac => {
+        let check = false;
+        followed_vacations.map(value => {
+            if(value.vacation_id === vac.id) {
+                check = true;
+                return
+            }})
+        return check;
+        })
+    }
+    const is_follow = useContext<boolean>(IsFollow)
+
     const get_followed_vacations = () => {
         const token = store.getState().token_reducer.value
         axios.get(`http://www.localhost:3000/my-followed-vacations`, {headers: {token: token}}).then((res) => {
@@ -31,23 +46,23 @@ export default function () {
         })
     }
     const get_data = () => {
-        get_followed_vacations()
-        get_all_vacations()
+            get_followed_vacations()
+            get_all_vacations()
     }
     useEffect(() => {
-        get_data()
+        // get_data()
     }, [])
 
     return(
         <div className='vacation-list-container'>
-            {vacations.map((value) => {
-                if(loading_1 || loading_2) {
-                    return (
-                        <div key={'vacation-id'+value.id}>
-                            Loading..
-                        </div>
-                    )
-                }
+            {(is_follow ? update_my_vacations() : vacations).map((value) => {
+                // if((loading_1 || loading_2)) {
+                //     return (
+                //         <div key={'vacation-id'+value.id}>
+                //             Loading..
+                //         </div>
+                //     )
+                // }
                 return (
                     <div key={'vacation-id'+value.id}>
                         <Vacation

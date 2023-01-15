@@ -10,7 +10,6 @@ export default function (props: vacation) {
     const [followers_count, set_followers_count] = useState(-1)
         const token = store.getState().token_reducer.value
         axios.get(`http://localhost:3000/followers-count/${props.id}`, {headers: {token: token}}).then((res) => {
-            console.log(res)
             set_followers_count(res.data);
         }).catch((error) => {
             console.log(error);

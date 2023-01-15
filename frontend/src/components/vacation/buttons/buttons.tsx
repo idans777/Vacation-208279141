@@ -6,6 +6,7 @@ import { RootState, store } from "../../../state/store"
 import { set_vacations } from "../../../state/vacations_slice"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { set_followed_vacations } from "../../../state/followed_vacations"
 
 export default function (props:{vacation_id: number}) {
     const dispatch = useDispatch()
@@ -31,6 +32,9 @@ export default function (props:{vacation_id: number}) {
             if(res.status === 200) {
                 //toggle follow
                 set_follow_unfollow(current => current === 'follow' ? 'unfollow' : 'follow')
+                axios.get(`http://www.localhost:3000/my-followed-vacations`, {headers: {token: token}}).then((res) => {
+                    dispatch(set_followed_vacations(res.data))
+                })
             }
             else {
                 console.log('follow failed')
