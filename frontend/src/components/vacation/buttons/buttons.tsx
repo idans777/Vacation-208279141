@@ -7,6 +7,7 @@ import { set_vacations } from "../../../state/vacations_slice"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { set_followed_vacations } from "../../../state/followed_vacations"
+import { vacation } from "../../../state/vacations_slice"
 
 export default function (props:{vacation_id: number}) {
     const dispatch = useDispatch()
@@ -51,6 +52,7 @@ export default function (props:{vacation_id: number}) {
                 const token = store.getState().token_reducer.value
                 axios.get('http://localhost:3000/all-vacations', {headers: {token: token}}).then((res) => {
                     console.log(res.data?.msg)
+                    res.data.sort((a: vacation, b: vacation) => a.start_date.localeCompare(b.start_date))
                     dispatch(set_vacations(res.data))
                 })
             }
