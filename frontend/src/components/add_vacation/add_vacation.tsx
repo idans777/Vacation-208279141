@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import { store } from "../../state/store";
 import { useNavigate } from "react-router-dom";
@@ -57,6 +57,13 @@ export default function() {
             }
         })
     }
+    useEffect(() => {
+        const token = store.getState().token_reducer.value
+        if( token === '') {
+            navigate('/signin', {replace: true})
+            return
+        }
+    }, [])
     return (
         <div className="Add-form-container">
             <form className="Add-form" onSubmit={onSubmit}>

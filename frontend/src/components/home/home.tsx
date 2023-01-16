@@ -10,7 +10,6 @@ import  { store, type RootState } from '../../state/store'
 import { set_vacations, vacation } from '../../state/vacations_slice'
 import { set_followed_vacations } from '../../state/followed_vacations'
 import Button from 'react-bootstrap/Button';
-import { current } from '@reduxjs/toolkit'
 
 export const IsFollow = createContext<boolean>(false)
 
@@ -37,6 +36,11 @@ export default function () {
     }
 
     useEffect(() => {
+        const token = store.getState().token_reducer.value
+        if( token === '') {
+            navigate('/signin', {replace: true})
+            return
+        }
         refresh()
     }, [])
 

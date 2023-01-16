@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import { store } from "../../state/store";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ export default function() {
     const navigate = useNavigate();
     const { state } = useLocation();
     // The id of the current vacation that is being updated
-    const { id } = state;
+    const id = state ? state.id : -1
     let vacation: vacation = store.getState().vacation_reducer.value[0];
     // Get all the vacation date based on the given id
     store.getState().vacation_reducer.value.map((value) => {
@@ -19,33 +19,33 @@ export default function() {
             return;
         }
     })
-
-    const [description, set_description] = useState(vacation.description);
-    const [destination, set_destination] = useState(vacation.destination);
-    const [image, set_image] = useState(vacation.image);
-    const [price, set_price] = useState(vacation.price+'');
-    const [start_date, set_start_date] = useState(vacation.start_date);
-    const [end_date, set_end_date] = useState(vacation.end_date);
-
+    
+    const [description, set_description] = useState(vacation ? vacation.description : '');
+    const [destination, set_destination] = useState(vacation ? vacation.destination : '');
+    const [image, set_image] = useState(vacation ? vacation.image : '');
+    const [price, set_price] = useState(vacation ? vacation.price+'' : '');
+    const [start_date, set_start_date] = useState(vacation ? vacation.start_date : '');
+    const [end_date, set_end_date] = useState(vacation ? vacation.end_date : '');
+    
     const handleFileRead = async (event: any) => {
         const file = event.target.files[0]
         const base64 = await convertBase64(file)
         set_image(base64 as string)
     }
-
+    
     const convertBase64 = (file: any) => {
         return new Promise((resolve, reject) => {
           const fileReader = new FileReader();
           fileReader.readAsDataURL(file)
           fileReader.onload = () => {
-            resolve(fileReader.result);
-          }
-          fileReader.onerror = (error) => {
-            reject(error);
-          }
+              resolve(fileReader.result);
+            }
+            fileReader.onerror = (error) => {
+                reject(error);
+            }
         })
     }
-
+    
     const onSubmit = (event: any) => {
         event.preventDefault()
         const data = {
@@ -71,6 +71,13 @@ export default function() {
             }
         })
     }
+    useEffect(() => {
+        const token = store.getState().token_reducer.value
+        if( token === '') {
+            navigate('/signin', {replace: true})
+            return
+        }
+    }, [])
     return (
         <div className="Add-form-container">
             <h1>Update Vacation</h1>
@@ -82,7 +89,7 @@ export default function() {
                         className="form-control mt-1"
                         defaultValue={id}
                         readOnly={true}
-                    />
+                        />
                 </div>
                 <div className="form-group mt-3">
                     <label>Description</label>
