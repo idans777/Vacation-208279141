@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import  { store, type RootState } from '../../state/store'
 import { set_vacations, vacation } from '../../state/vacations_slice'
 import { set_followed_vacations } from '../../state/followed_vacations'
+import Button from 'react-bootstrap/Button';
+import { current } from '@reduxjs/toolkit'
 
 export const IsFollow = createContext<boolean>(false)
 
@@ -43,10 +45,10 @@ export default function () {
             <div className='Home-Container'>
                 <h1>Welcome {user_name}</h1>
                 {user_name == "admin" ?
-                    <button className='btn-add-vacation' onClick={() => {add_vacation()}}>Add vacation</button> :
-                    <button className='btn-my-vacation' onClick={() => set_is_follow((current) => !current)}>My Vacations</button>
+                    <Button className='btn-add-vacation' onClick={() => {add_vacation()}}>Add vacation</Button> :
+                    <Button className='btn-my-vacation' onClick={() => set_is_follow((current) => !current)}>{is_follow ? 'All Vacation' : 'My Vacation'}</Button>
                 }
-                <button className='btn-refresh' onClick={() => refresh()}>Refresh</button>
+                <Button className='btn-refresh' onClick={() => refresh()}>Refresh</Button>
                 <Vacation_list/>
             </div>
         </IsFollow.Provider>

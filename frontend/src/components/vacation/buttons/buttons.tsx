@@ -8,6 +8,9 @@ import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { set_followed_vacations } from "../../../state/followed_vacations"
 import { vacation } from "../../../state/vacations_slice"
+import Button from 'react-bootstrap/Button';
+import { PencilFill } from "react-bootstrap-icons"
+import { TrashFill } from "react-bootstrap-icons"
 
 export default function (props:{vacation_id: number}) {
     const dispatch = useDispatch()
@@ -43,7 +46,7 @@ export default function (props:{vacation_id: number}) {
         })
     }
 
-    const delete_vacation = (event: react.MouseEvent<HTMLButtonElement>) => {
+    const delete_vacation = () => {
         const token = store.getState().token_reducer.value
         axios.delete(`http://www.localhost:3000/delete-vacation/${props.vacation_id}`, {headers:{token: token}}).then((res) => {
             if(res.status === 200) {
@@ -62,30 +65,18 @@ export default function (props:{vacation_id: number}) {
         })
     }
 
-    const update_vacation = (event: react.MouseEvent<HTMLButtonElement>) => {
+    const update_vacation = () => {
         navigate('/update_vacation', {replace: true, state: {id: props.vacation_id}});
-        // const id = event.currentTarget.parentElement?.parentElement?.id
-        // const vacation_id = id?.at(id.length - 1)
-        // const token = store.getState().token_reducer.value
-        // axios.post('http://www.localhost:3000/update-vacation', {}, {headers:{token: token}, params: {vacation_id: vacation_id}}).then((res) => {
-        //     if(res.status === 200) {
-        //         //update vacation
-        //         console.log('update succeed')
-        //     }
-        //     else {
-        //         console.log('update failed')
-        //     }
-        // })
     }
     return (
         <div className="btn-container">
             {user_name === 'admin' ?
                 <div>
-                    <button className="admin-btn" onClick={(event)=>{delete_vacation(event)}}>delete</button>
-                    <button className="admin-btn" onClick={(event)=>{update_vacation(event)}}>update</button>
+                    <TrashFill className="admin-btn" onClick={()=>{delete_vacation()}} size={'7%'}>delete</TrashFill>
+                    <PencilFill className="admin-btn" onClick={()=>{update_vacation()}} size={'7%'}>update</PencilFill>
                 </div>
                 :
-                <button className="follow-btn" onClick={(event)=>{follow(event)}}>{follow_unfollow}</button>
+                <Button className="follow-btn" onClick={(event)=>{follow(event)}} size={'sm'}>{follow_unfollow}</Button>
             }
         </div>
     )
