@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - my_network
+    environment: 
+      MYSQL_ROOT_PASSWORD: '12345678'
+      MYSQL_DATABASE: 'vacation'
+
+  server:
+    build: ./backend
+    ports:
+      - 3000:3000
+    networks:
+      - my_network
+    depends_on:
+      - mysql
+
+  client:
+    build: ./frontend
+    ports:
+      - 3001:3001
+    networks:
+      - my_network
+      
+volumes:
+  db:
+    driver: local        
+
+networks:
+  my_network:

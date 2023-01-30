@@ -5,7 +5,8 @@
   "main": "server.ts",
   "scripts": {
     "test": "jest --coverage",
-    "server": "nodemon --exec ts-node server.ts"
+    "server": "nodemon --exec ts-node server.ts",
+    "docker": "docker build -t vac/back:latest ."
   },
   "keywords": [],
   "author": "idan shukrun",

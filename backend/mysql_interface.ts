@@ -16,7 +16,7 @@ const execute = (sql: string): Promise<any> => {
         connection.query(sql, (err, result) => {
             //if we got an error, exit with reject and return
             if (err) {
-                console.log("YES");
+                console.log(`Error querying DB: ${err}`);
                 reject(err);
                 return;
             }

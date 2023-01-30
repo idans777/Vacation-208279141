@@ -9,7 +9,7 @@ import Vacation from './classes/vacation';
 const route = express.Router();
 
 /* GET requests */
-route.get("/", auth,  async (request: Request, response: Response, next: NextFunction) => {
+route.get("/",  async (request: Request, response: Response, next: NextFunction) => {
     response.status(200).json("server working");
 })
 
